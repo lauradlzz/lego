@@ -1,74 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧱 Lego | Predictability of a lego set deal</title>
+    <style>
+      :root { --primary: #0055BF; --bg: #f4f4f9; --card-bg: #fff; --text: #333; }
+      body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+      h1, h2 { color: var(--primary); }
+      section { background: var(--card-bg); margin-bottom: 20px; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+      .controls { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 15px; }
+      button { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+      button:hover { background: #003d8c; }
+      select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+      .card { border: 1px solid #eee; padding: 15px; border-radius: 8px; background: #fff; transition: transform 0.2s; }
+      .card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+      .card a { color: var(--primary); text-decoration: none; font-weight: bold; }
+      .card a:hover { text-decoration: underline; }
+      .fav-btn { background: #ffcc00; color: #333; margin-top: 10px; width: 100%; font-weight: bold;}
+      .indicators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+      .indicator-box { background: #eef2f5; padding: 10px; border-radius: 5px; text-align: center; }
+      .indicator-box span { display: block; font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+    </style>
   </head>
   <body>
-    <h1>Lego</h1>
+    <h1>🧱 Lego Deals Tracker</h1>
+    
     <section id="options">
-      <div id="show">
-        <label for="show-select">Show:</label>
-        <select name="show" id="show-select">
-          <option value="6">6</option>
-          <option value="12">12</option>
-          <option value="24">24</option>
-        </select>
+      <div class="controls">
+        <div id="show">
+          <label for="show-select">Show:</label>
+          <select name="show" id="show-select">
+            <option value="6" selected>6</option>
+            <option value="12">12</option>
+            <option value="24">24</option>
+          </select>
+        </div>
+        <div id="page">
+          <label for="page-select">Go to page:</label>
+          <select name="page" id="page-select"></select>
+        </div>
+        <div id="sort">
+          <label for="sort-select">Sort:</label>
+          <select name="sort" id="sort-select">
+            <option value="default">Default</option>
+            <option value="price-asc">Cheaper</option>
+            <option value="price-desc">Expensive</option>
+            <option value="date-desc">Recently published</option>
+            <option value="date-asc">Anciently published</option>
+          </select>
+        </div>
       </div>
-      <div id="page">
-        <label for="page-select">Go to page:</label>
-        <select name="page" id="page-select"> </select>
-      </div>
-      <div id="filters">
-        <span>By best discount</span>
-        <span>By most commented</span>
-        <span>By hot deals</span>
-      </div>
-      <div id="sort">
-        <label for="sort-select">Sort:</label>
-        <select name="sort" id="sort-select">
-          <option value="price-asc">Cheaper</option>
-          <option value="price-desc">Expensive</option>
-          <option value="date-asc">Recently published</option>
-          <option value="date-desc">Anciently published</option>
-        </select>
+      
+      <div class="controls" id="filters">
+        <button id="filter-discount">🔥 > 50% Discount</button>
+        <button id="filter-comments">💬 > 15 Comments</button>
+        <button id="filter-hot">🌶️ Hot Deals (> 100)</button>
+        <button id="filter-favorites">⭐ My Favorites</button>
+        <button id="filter-reset" style="background: #666;">Reset Filters</button>
       </div>
     </section>
+
     <section id="lego">
-      <h2>Lego sets</h2>
-      <div>
+      <h2>Analyze a Lego Set</h2>
+      <div class="controls">
         <label>Lego set id:</label>
         <select id="lego-set-id-select"></select> 
       </div>
     </section>
+
     <section id="indicators">
-      <h2>Indicators</h2>
-      <div>
-        <span>Number of deals</span>
-        <span id="nbDeals">0</span>
-      </div>
-      <div>
-        <span>Number of sales</span>
-        <span id="nbSales">0</span>
-      </div>
-      <div>
-        <span>p5 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>p25 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>p50 sales price value</span>
-        <span>0</span>
-      </div>
-      <div>
-        <span>Lifetime value</span>
-        <span>10 days</span>
+      <h2>Market Indicators (Based on Vinted Sales)</h2>
+      <div class="indicators-grid">
+        <div class="indicator-box">Total Deals<span id="nbDeals">0</span></div>
+        <div class="indicator-box">Total Vinted Sales<span id="nbSales">0</span></div>
+        <div class="indicator-box">p5 Price<span id="p5Price">0 €</span></div>
+        <div class="indicator-box">p25 Price<span id="p25Price">0 €</span></div>
+        <div class="indicator-box">p50 Price<span id="p50Price">0 €</span></div>
+        <div class="indicator-box">Lifetime<span id="lifetimeValue">0 days</span></div>
       </div>
     </section>
-    <section id="deals"></section>
+
+    <section id="sales-section">
+      <h2>Vinted Sales</h2>
+      <div id="sales" class="grid"></div>
+    </section>
+
+    <section>
+      <h2>Pepper Deals</h2>
+      <div id="deals" class="grid"></div>
+    </section>
+
     <script type="text/javascript" charset="UTF-8" src="utils.js"></script>
     <script type="text/javascript" charset="UTF-8" src="portfolio.js"></script>
   </body>
