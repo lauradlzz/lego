@@ -6,17 +6,13 @@
   "repository": "git@github.com:92bondstreet/lego.git",
   "type": "module",
   "dependencies": {
-<<<<<<< HEAD
     "axios": "^1.13.6",
-    "cheerio": "^1.2.0",
-    "fs": "^0.0.1-security",
-=======
     "body-parser": "^2.2.2",
-    "cheerio": "^1.0.0",
+    "cheerio": "^1.2.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "fs": "^0.0.1-security",
     "helmet": "^8.1.0",
->>>>>>> 57de1a7 (docs(api): create the workhop 4 about api with express)
     "parse-domain": "^8.3.0",
     "playwright": "^1.59.1",
     "require-all": "^3.0.0",
@@ -24,6 +20,5 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }
