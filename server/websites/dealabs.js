@@ -23,7 +23,9 @@ const parse = data => {
       const temperature = t.temperature ?? null;
       const comments = t.commentCount ?? 0;
       const published = t.publishedAt ?? null;
-      const photo = t.mainImage ? `https://static-pepper.dealabs.com/${t.mainImage.path}/${t.mainImage.name}/re/300x300/qt/60/${t.mainImage.name}.jpg` : null;
+      const photo = t.mainImage?.path && t.mainImage?.name
+        ? `https://static-pepper.dealabs.com/${t.mainImage.path}/${t.mainImage.name}.jpg`
+        : null;
       const idMatch = title.match(/\b(\d{4,6})\b/);
       const id = idMatch ? idMatch[1] : null;
       const nextBestPrice = t.nextBestPrice ?? null;

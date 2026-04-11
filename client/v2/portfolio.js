@@ -77,6 +77,7 @@ const renderDeals = (deals) => {
     const isFav = favorites.includes(deal.uuid);
     return `
       <div class="card" id="${deal.uuid}">
+        <img src="${deal.photo}" style="width:100%;border-radius:5px;margin-bottom:8px;" onerror="this.style.display='none'">
         <span>ID: <strong>${deal.id}</strong></span><br>
         <a href="${deal.link}" target="_blank">${deal.title}</a>
         <p>💰 Price: <strong>${deal.price} €</strong> (Discount: ${deal.discount ?? 'N/A'}%)</p>
