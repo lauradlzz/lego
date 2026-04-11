@@ -56,18 +56,54 @@ app.get('/deals/:id', (request, response) => {
 });
 
 // GET /sales/search
-app.get('/sales/search', (request, response) => {
+app.get('/sales/search', async (request, response) => {
   response.setHeader('Access-Control-Allow-Origin', '*');
   try {
     const limit = parseInt(request.query.limit) || 12;
     const { legoSetId } = request.query;
-    let result = SALES[legoSetId] || [];
-    result = result.sort((a, b) => b.published - a.published).slice(0, limit);
+    
+    if (!legoSetId) {
+      return response.status(200).json({
+        'success': true,
+        'data': {'limit': limit, 'total': 0, 'result': []}
+      });
+    }
+
+    // Scrape Vinted en temps réel
+    const vintedResponse = await fetch(`https://www.vinted.fr/api/v2/catalog/items?page=1&per_page=96&time=${Math.floor(Date.now()/1000)}&search_text=${legoSetId}&catalog_ids=&size_ids=&brand_ids=89162&status_ids=6,1&material_ids`, {
+      headers: {
+        'accept': 'application/json',
+        'accept-language': 'fr-FR,fr;q=0.9',
+        'cookie': process.env.VINTED_COOKIE || ''
+      }
+    });
+
+    if (!vintedResponse.ok) {
+      // Fallback sur le fichier statique
+      const result = (SALES[legoSetId] || []).slice(0, limit);
+      return response.status(200).json({
+        'success': true,
+        'data': {'limit': limit, 'total': result.length, 'result': result}
+      });
+    }
+
+    const body = await vintedResponse.json();
+    const items = body.items || [];
+    const result = items.slice(0, limit).map(item => ({
+      link: item.url,
+      price: { amount: item.total_item_price?.amount || item.price?.amount, currency_code: 'EUR' },
+      title: item.title,
+      published: item.photo?.high_resolution?.timestamp,
+      uuid: item.id
+    }));
+
     return response.status(200).json({
       'success': true,
       'data': {'limit': limit, 'total': result.length, 'result': result}
     });
+
   } catch (error) {
+    console.error(error);
     return response.status(404).json({'success': false, 'data': {'result': []}});
   }
 });
