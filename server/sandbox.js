@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-process-exit */
 import * as avenuedelabrique from './websites/avenuedelabrique.js';
 import * as vinted from './websites/vinted.js';
+import fs from 'fs';
 
 async function scrapeADLB (website = 'https://www.avenuedelabrique.com/promotions-et-bons-plans-lego') {
   try {
@@ -20,10 +21,9 @@ async function scrapeADLB (website = 'https://www.avenuedelabrique.com/promotion
 async function scrapeVinted (lego) {
   try {
     console.log(`🕵️‍♀️  scraping lego ${lego} from vinted.fr`);
-
     const sales = await vinted.scrape(lego);
-
     console.log(sales);
+    fs.writeFileSync('sales.json', JSON.stringify(sales, null, 2));
     console.log('done');
     process.exit(0);
   } catch (e) {
@@ -35,5 +35,5 @@ async function scrapeVinted (lego) {
 
 const [,, param] = process.argv;
 
-scrapeADLB(param);
-//scrapeVinted(param)
+//scrapeADLB(param);
+scrapeVinted(param)
