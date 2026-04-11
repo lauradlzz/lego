@@ -34,10 +34,13 @@ const btnFilterReset = document.querySelector('#filter-reset');
  */
 const fetchDeals = async (page = 1, size = 6) => {
   try {
-    const response = await fetch(`https://lego-api-blue.vercel.app/deals?page=${page}&size=${size}`);
+    const response = await fetch(`https://server-kappa-smoky-74.vercel.app/deals/search?limit=${size}`);
     const body = await response.json();
     if (body.success !== true) return {result: [], meta: {}};
-    return body.data;
+    return {
+      result: body.data.results,
+      meta: { count: body.data.total, currentPage: 1, pageCount: 1 }
+    };
   } catch (error) {
     console.error(error);
     return {result: [], meta: {}};
@@ -49,7 +52,7 @@ const fetchDeals = async (page = 1, size = 6) => {
  */
 const fetchSales = async (id) => {
   try {
-    const response = await fetch(`https://lego-api-blue.vercel.app/sales?id=${id}`);
+    const response = await fetch(`https://server-kappa-smoky-74.vercel.app/sales/search?legoSetId=${id}`);
     const body = await response.json();
     if (body.success !== true) return [];
     return body.data.result;
