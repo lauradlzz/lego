@@ -34,7 +34,7 @@ const calculatePercentile = (data, percentile) => {
  */
 const calculateLifetime = (sales) => {
   if (sales.length === 0) return 0;
-  const dates = sales.map(sale => new Date(sale.published).getTime()).filter(t => !isNaN(t));
+  const dates = sales.map(sale => sale.published * 1000).filter(t => !isNaN(t));
   if (dates.length === 0) return 0;
   
   const minDate = Math.min(...dates);

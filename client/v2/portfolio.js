@@ -76,7 +76,7 @@ const renderDeals = (deals) => {
       <div class="card" id="${deal.uuid}">
         <span>ID: <strong>${deal.id}</strong></span><br>
         <a href="${deal.link}" target="_blank">${deal.title}</a>
-        <p>💰 Price: <strong>${deal.price} €</strong> (Discount: ${deal.discount}%)</p>
+        <p>💰 Price: <strong>${deal.price} €</strong> (Discount: ${deal.discount ?? 'N/A'}%)</p>
         <p>🌡️ Temp: ${deal.temperature} | 💬 Comments: ${deal.comments}</p>
         <button class="fav-btn" data-uuid="${deal.uuid}">
           ${isFav ? '⭐ Remove Favorite' : '☆ Add to Favorite'}
@@ -108,8 +108,8 @@ const renderSales = (sales) => {
   const template = sales.map(sale => `
     <div class="card">
       <a href="${sale.link}" target="_blank">${sale.title}</a>
-      <p>💰 Sold Price: <strong>${sale.price} €</strong></p>
-      <p>📅 Date: ${new Date(sale.published).toLocaleDateString()}</p>
+      <p>💰 Sold Price: <strong>${sale.price.amount} €</strong></p>
+      <p>📅 Date: ${new Date(sale.published*1000).toLocaleDateString()}</p>
     </div>
   `).join('');
   sectionSales.innerHTML = template;
@@ -122,7 +122,7 @@ const renderIndicators = (pagination, sales) => {
   spanNbDeals.innerHTML = pagination.count || 0;
   spanNbSales.innerHTML = sales.length;
 
-  const prices = sales.map(s => s.price);
+  const prices = sales.map(s => parseFloat(s.price.amount));
   spanP5.innerHTML = calculatePercentile(prices, 5).toFixed(2) + ' €';
   spanP25.innerHTML = calculatePercentile(prices, 25).toFixed(2) + ' €';
   spanP50.innerHTML = calculatePercentile(prices, 50).toFixed(2) + ' €';
